@@ -6,7 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
+using HslCommunication;
 
 namespace HslCommunicationDemo
 {
@@ -20,14 +22,14 @@ namespace HslCommunicationDemo
         private void FormTcpDebug_Load( object sender, EventArgs e )
         {
             panel2.Enabled = false;
-            timer = new Timer( );
+            timer = new System.Windows.Forms.Timer( );
             timer.Interval = 200;
             timer.Tick += Timer_Tick;
             timer.Start( );
 
             Language( Program.Language );
-
         }
+
 
         private void Language( int language )
         {
@@ -87,7 +89,7 @@ namespace HslCommunicationDemo
         private Socket socketCore = null;
         private bool connectSuccess = false;
         private byte[] buffer = new byte[2048];
-        private Timer timer;
+        private System.Windows.Forms.Timer timer;
 
         private void button1_Click( object sender, EventArgs e )
         {
@@ -124,7 +126,6 @@ namespace HslCommunicationDemo
             socketCore?.Close( );
             button1.Enabled = true;
             button2.Enabled = false;
-            panel2.Enabled = false;
         }
 
         private void ReceiveCallBack( IAsyncResult ar )
@@ -223,5 +224,53 @@ namespace HslCommunicationDemo
             HslCommunication.Robot.EFORT.ER7BC10 eR7BC10 = new HslCommunication.Robot.EFORT.ER7BC10( "192.168.0.100",8008 );
             textBox5.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString( eR7BC10.GetReadCommand( ), ' ' );
         }
+
+        #region Toledo Test
+
+        private void button6_Click( object sender, EventArgs e )
+        {
+            if (button6.BackColor != Color.Green)
+            {
+                toledoThread = true;
+                button6.BackColor = Color.Green;
+                new System.Threading.Thread( new System.Threading.ThreadStart( ToledoTest ) ) { IsBackground = true }.Start( );
+            }
+            else
+            {
+                toledoThread = false;
+                button6.BackColor = SystemColors.Control;
+            }
+        }
+
+        private bool toledoThread = false;
+        private Random random = new Random( );
+        private float toledoWeight = 30f;
+
+        private void ToledoTest( )
+        {
+            while (toledoThread)
+            {
+                System.Threading.Thread.Sleep( 30 );
+
+                byte[] send = "02 2C 30 20 20 20 33 38 36 32 20 20 20 30 30 30 0D".ToHexBytes( );
+                toledoWeight += random.Next( 200 ) / 100f - 1;
+                if (toledoWeight < 0) toledoWeight = 5f;
+                if (toledoWeight > 100) toledoWeight = 95f;
+                string tmp = toledoWeight.ToString( "F2" ).Replace( ".", "" ).PadLeft( 6, ' ' );
+                Encoding.ASCII.GetBytes( tmp ).CopyTo( send, 4 );
+
+                try
+                {
+                    socketCore?.Send( send, 0, send.Length, SocketFlags.None );
+                }
+                catch (Exception ex)
+                {
+                    HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
+                    return;
+                }
+            }
+        }
+
+        #endregion
     }
 }

@@ -59,7 +59,7 @@
 			this.hslTitle1.Size = new System.Drawing.Size(700, 58);
 			this.hslTitle1.TabIndex = 0;
 			this.hslTitle1.Text = "HslCommunication";
-			this.hslTitle1.TextLeft = "";
+			this.hslTitle1.TextLeft = "免费测试8小时";
 			this.hslTitle1.TextRight = "";
 			// 
 			// linkLabel1
@@ -68,10 +68,10 @@
 			this.linkLabel1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
 			this.linkLabel1.Location = new System.Drawing.Point(56, 367);
 			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(194, 17);
+			this.linkLabel1.Size = new System.Drawing.Size(123, 17);
 			this.linkLabel1.TabIndex = 2;
 			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "http://www.hslcommunication.cn";
+			this.linkLabel1.Text = "http://118.24.36.220";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
 			// 
 			// label10

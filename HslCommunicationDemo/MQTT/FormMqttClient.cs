@@ -67,6 +67,7 @@ namespace HslCommunicationDemo
 				button9.Text = "Press Test";
 				button7.Text = "subscribe";
 				button8.Text = "unsubscribe";
+				button10.Text = "OnlyTransfer";
 			}
 		}
 
@@ -87,10 +88,12 @@ namespace HslCommunicationDemo
 			}
 
 			button1.Enabled = false;
+			mqttClient?.ConnectClose( );
 			mqttClient = new MqttClient( options );
 			mqttClient.LogNet = new HslCommunication.LogNet.LogNetSingle( string.Empty );
 			mqttClient.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
-			mqttClient.OnMqttMessageReceived += MqttClient_OnMqttMessageReceived;
+			mqttClient.OnMqttMessageReceived   += MqttClient_OnMqttMessageReceived;
+			mqttClient.OnNetworkError          += MqttClient_OnNetworkError;
 
 			OperateResult connect = await mqttClient.ConnectServerAsync( );
 
@@ -108,6 +111,31 @@ namespace HslCommunicationDemo
 				MessageBox.Show( connect.Message );
 			}
 		}
+
+		private void MqttClient_OnNetworkError( object sender, EventArgs e )
+		{
+			// 当网络异常的时候触发，可以在此处重连服务器
+			if(sender is MqttClient client)
+			{
+				// 开始重连服务器，直到连接成功为止
+				client.LogNet?.WriteInfo( "网络异常，准备10秒后重新连接。" );
+				while (true)
+				{
+					// 每隔10秒重连
+					System.Threading.Thread.Sleep( 10_000 );
+					client.LogNet?.WriteInfo( "准备重新连接服务器..." );
+					OperateResult connect = client.ConnectServer( );
+					if (connect.IsSuccess)
+					{
+						// 连接成功后，可以在下方break之前进行订阅，或是数据初始化操作
+						client.LogNet?.WriteInfo( "连接服务器成功！" );
+						break;
+					}
+					client.LogNet?.WriteInfo( "连接失败，准备10秒后重新连接。" );
+				}
+			}
+		}
+
 		private long receiveCount = 0;
 		private void MqttClient_OnMqttMessageReceived( string topic, byte[] payload )
 		{
@@ -194,6 +222,17 @@ namespace HslCommunicationDemo
 
 		}
 
+		private void button10_Click( object sender, EventArgs e )
+		{
+			OperateResult send = mqttClient.PublishMessage( new MqttApplicationMessage( )
+			{
+				QualityOfServiceLevel = MqttQualityOfServiceLevel.OnlyTransfer,
+				Topic = textBox5.Text,
+				Payload = Encoding.UTF8.GetBytes( textBox4.Text )
+			} );
+
+			if (!send.IsSuccess) MessageBox.Show( "Send Failed:" + send.Message );
+		}
 
 		private void button4_Click( object sender, EventArgs e )
 		{

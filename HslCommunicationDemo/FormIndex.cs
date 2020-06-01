@@ -66,17 +66,19 @@ namespace HslCommunicationDemo
 
 		private void SetUpdayeInfo( )
 		{
-			textBox1.Text = @"V9.1.3
-1. HslExtension: 完善一些转化的api，方便数组和字符串转化，完善对象转JSON字符串。
-2. LogNet：消息格式化文本的消息等级追随HSL的语言设定，如果是中文，就显示调试，信息，警告，错误，致命。
-3. Redis: 修复ExpireKey，生存时间参数丢失的bug，完善了说明文档。
-4. OmronCip: 欧姆龙的CIP协议的类库，修复数组读取的bug，修复字符串写入bug，字符串写入还需要测试。
-5. Toledo：新增托利多电子秤的串口类及网口服务器类，方便接收标准的数据流，等待测试。
-6. Java：增加了单元测试的内容，对一些已经完成的类添加单元测试。
-7. Python：实现了python版本的HslCommunication程序，基于pyqt实现，初步添加了一些PLC的调试界面。
-8. 代码注释优化，使用前请仔细阅读下面的信息：http://api.hslcommunication.cn/
-9. http://www.hslcommunication.cn/MesDemo 官网的地址以后作为优秀的MES产品展示平台，欢迎大家关注。
-10. HSL的目标是打造成工业互联网的利器，工业大数据的基础，打造边缘计算平台。企业终身授权费：8000元。";
+			textBox1.Text = @"V9.2.4
+1. Mewtocol: 松下的串口协议修复LD寄存器无法访问的bug，输入LD100，如果只输入L100，就是线圈。
+2. Modbus: 修复写入寄存器指定位bool失败的bug，写入true的掩码改为 FF FE，00 01
+3. Modbus：在ModbusRtuOverTcp里填写掩码写入的api方法。
+4. ab-plc：CIP协议解析标签地址的编码从ASCII编码修改为UTF-8编码，支持中文的标签名访问。
+5. omron-plc：CIP协议解析标签地址的编码从ASCII编码修改为UTF-8编码，支持中文的标签名访问。
+6. Websocket: 连接的请求标头修改为GET ws://127.0.0.1:8800/ HTTP/1.1  就是带IP地址及端口信息
+7. Redis：Redis的客户端添加对集合和有序集合操作的相关API方法，基本支持了所有需要的操作信息，单元测试通过。
+8. Demo: 所有DEMO写入数据操作，新增Hex写入，输入1A 1B等十六进制数据，然后底层调用Write(string, byte[])方法。
+9. Demo：Redis的功能菜单新增一个测试界面，用来同步两个不同的redis的数据，也可以同一个redis不同的db块数据。
+10. 官网的备案失效了，重新备案需要点时间，请访问 http://118.24.36.220/ 然后去顶部的菜单找相应的入口。
+11. 本软件已经申请软件著作权，软著登字第5219522号，任何盗用软件，破解软件，未经正式合同授权而商业使用均视为侵权。
+12. HSL的目标是打造成工业互联网的利器，工业大数据的基础，打造边缘计算平台。企业终身授权费：8000元(不含税)。";
 		}
 
 
